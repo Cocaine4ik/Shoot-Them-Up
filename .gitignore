@@ -3,7 +3,7 @@
 
 # Rider user specific files
 .idea/
-.idea/**/.idea
+**/.idea
 
 # Compiled Object files
 *.slo
