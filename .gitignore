@@ -3,7 +3,10 @@
 
 # Rider user specific files
 .idea/
-.idea/.idea.ShootThemUp/.idea/
+dist/*
+target/
+*.class
+*.log
 
 # Compiled Object files
 *.slo
