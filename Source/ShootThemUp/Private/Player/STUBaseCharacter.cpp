@@ -42,14 +42,40 @@ void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     PlayerInputComponent->BindAxis("LookUp", this, &ASTUBaseCharacter::AddControllerPitchInput);
     PlayerInputComponent->BindAxis("TurnAround", this, &ASTUBaseCharacter::AddControllerYawInput);
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTUBaseCharacter::Jump);
+    PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ASTUBaseCharacter::OnStartRunning);
+    PlayerInputComponent->BindAction("Run", IE_Released, this, &ASTUBaseCharacter::OnStopStopRunning);
+}
+
+bool ASTUBaseCharacter::IsRunning() const
+{
+    return bWantToRun && bIsMovingForward && !GetVelocity().IsZero();
 }
 
 void ASTUBaseCharacter::MoveForward(float Amount)
 {
+    bIsMovingForward = Amount > 0.0f;
     AddMovementInput(GetActorForwardVector(), Amount);
 }
 
 void ASTUBaseCharacter::MoveRight(float Amount)
 {
     AddMovementInput(GetActorRightVector(), Amount);
+}
+
+void ASTUBaseCharacter::OnStartRunning()
+{
+    if(GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Start Run"));
+    }
+    bWantToRun = true;
+}
+
+void ASTUBaseCharacter::OnStopStopRunning()
+{
+    if(GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Stop Run"));
+    }
+    bWantToRun = false;
 }
