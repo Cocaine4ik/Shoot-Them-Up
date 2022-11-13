@@ -2,6 +2,7 @@
 
 
 #include "Player/STUBaseCharacter.h"
+#include "AnimGraphRuntime/Public/KismetAnimationLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -51,6 +52,13 @@ void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 bool ASTUBaseCharacter::IsRunning() const
 {
     return bWantsToRun && bIsMovingForward && !GetVelocity().IsZero();
+}
+
+float ASTUBaseCharacter::GetMoveDirection() const
+{
+    float Direction = UKismetAnimationLibrary::CalculateDirection(GetVelocity(),GetActorRotation());
+    // if(GEngine)  GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Red, FString::Printf(TEXT("Direction: %f"), Direction));
+    return Direction;
 }
 
 void ASTUBaseCharacter::MoveForward(float Amount)
