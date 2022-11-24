@@ -5,6 +5,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "STUHealthComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
 
@@ -42,6 +43,8 @@ void ASTUBaseWeapon::MakeShot()
 
     if(HitResult.bBlockingHit)
     {
+        MakeDamage(HitResult);
+        
         DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Red, false,
             3.0f, 0, 3.0f);
         DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
@@ -97,5 +100,13 @@ void ASTUBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart, c
     CollisionParams.AddIgnoredActor(GetOwner());
     
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, CollisionParams);
+}
+
+void ASTUBaseWeapon::MakeDamage(const FHitResult HitResult)
+{
+    const auto HitActor = HitResult.GetActor();
+    if(!HitActor) return;
+    if(!HitActor->FindComponentByClass<USTUHealthComponent>()) return;
+    HitActor->TakeDamage(DamageAmount, FDamageEvent{}, GetPlayerController(), this);
 }
 
