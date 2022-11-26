@@ -6,7 +6,6 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "STUBaseCharacter.h"
-#include "STUHealthComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
 
@@ -81,13 +80,5 @@ void ASTUBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart, c
     CollisionParams.AddIgnoredActor(GetOwner());
     
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, CollisionParams);
-}
-
-void ASTUBaseWeapon::MakeDamage(const FHitResult HitResult)
-{
-    const auto HitActor = HitResult.GetActor();
-    if(!HitActor) return;
-    if(!HitActor->FindComponentByClass<USTUHealthComponent>()) return;
-    HitActor->TakeDamage(DamageAmount, FDamageEvent{}, GetPlayerController(), this);
 }
 
