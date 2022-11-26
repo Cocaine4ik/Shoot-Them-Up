@@ -4,6 +4,7 @@
 #include "Weapons/STURifleWeapon.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "STUHealthComponent.h"
 
 void ASTURifleWeapon::StartFire()
 {
@@ -54,4 +55,12 @@ bool ASTURifleWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
     const FVector ShootDirection = FMath::VRandCone(ViewRotation.Vector(), HalfRad);
     TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
     return true;
+}
+
+void ASTURifleWeapon::MakeDamage(const FHitResult HitResult)
+{
+    const auto HitActor = HitResult.GetActor();
+    if(!HitActor) return;
+    if(!HitActor->FindComponentByClass<USTUHealthComponent>()) return;
+    HitActor->TakeDamage(DamageAmount, FDamageEvent{}, GetPlayerController(), this);
 }
