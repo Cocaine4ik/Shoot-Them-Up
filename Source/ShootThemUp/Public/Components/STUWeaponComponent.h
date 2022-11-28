@@ -18,7 +18,7 @@ public:
 
     void StartFire();
     void StopFire();
-    void NetxWeapon();
+    void NextWeapon();
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
@@ -28,7 +28,10 @@ protected:
     FName WeaponEquipSocketName = "WeaponSocket";
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    FName WeaponArmorySocketName= "ArmorySocket";
+    FName WeaponArmorySocketName = "ArmorySocket";
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage* EquipAnimMontage;
     
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -41,9 +44,18 @@ private:
     TArray<ASTUBaseWeapon*> Weapons;
 
     int32 CurrentWeaponIndex = 0;
+    bool bEquipAnimInProgress = false;
     
     void SpawnWeapons();
 
     void AttachWeaponToSocket(ASTUBaseWeapon* Weapon, USceneComponent* SceneComponent, const FName& SocketName);
-    void  EquipWeapon(int32 WeaponIndex);
+    void EquipWeapon(int32 WeaponIndex);
+
+    void PlayAnimMontage(UAnimMontage* Animation);
+    void InitAnimations();
+    void OnEquipFinished(USkeletalMeshComponent* MeshComponent);
+    void OnWeaponChange(USkeletalMeshComponent* MeshComponent);
+
+    bool CanFire() const;
+    bool CanEquip() const;
 };
