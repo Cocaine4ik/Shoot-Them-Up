@@ -75,7 +75,11 @@ private:
     void OnReloadFinished(USkeletalMeshComponent* MeshComponent);
     
     bool CanDoAction() const;
+    bool CanReload() const;
 
+    void OnEmptyClip();
+    void ChangeClip();
+    
     template<typename T>
     T* FindFirstNotifyByClass(UAnimMontage* Animation)
     {
