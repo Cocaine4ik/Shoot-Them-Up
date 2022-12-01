@@ -19,7 +19,7 @@ USTUWeaponComponent::USTUWeaponComponent()
 
 void USTUWeaponComponent::StartFire()
 {
-    if(!CanFire()) return;
+    if(!CanDoAction()) return;
     CurrentWeapon->StartFire();
 }
 
@@ -31,7 +31,7 @@ void USTUWeaponComponent::StopFire()
 
 void USTUWeaponComponent::NextWeapon()
 {
-    if(!CanEquip()) return;
+    if(!CanDoAction()) return;
     
     CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
     bEquipAnimInProgress = true;
@@ -40,7 +40,7 @@ void USTUWeaponComponent::NextWeapon()
 
 void USTUWeaponComponent::Reload()
 {
-    if(!CanReload()) return;
+    if(!CanDoAction()) return;
     bReloadAnimInProgress = true;
     PlayAnimMontage(CurrentReloadAnimMontage);
 }
@@ -174,18 +174,9 @@ void USTUWeaponComponent::OnReloadFinished(USkeletalMeshComponent* MeshComponent
     UE_LOG(LogWeaponComponent, Display, TEXT("Reload finished!"));
 }
 
-bool USTUWeaponComponent::CanReload() const
+bool USTUWeaponComponent::CanDoAction() const
 {
     return CurrentWeapon && !bEquipAnimInProgress && !bReloadAnimInProgress;
 }
 
-bool USTUWeaponComponent::CanFire() const
-{
-    return CurrentWeapon && !bEquipAnimInProgress && !bReloadAnimInProgress;
-}
-
-bool USTUWeaponComponent::CanEquip() const
-{
-    return !bEquipAnimInProgress && !bReloadAnimInProgress;
-}
 

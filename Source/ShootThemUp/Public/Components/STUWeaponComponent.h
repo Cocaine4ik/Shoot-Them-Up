@@ -73,10 +73,8 @@ private:
     void OnEquipFinished(USkeletalMeshComponent* MeshComponent);
     void OnWeaponChange(USkeletalMeshComponent* MeshComponent);
     void OnReloadFinished(USkeletalMeshComponent* MeshComponent);
-
-    bool CanFire() const;
-    bool CanEquip() const;
-    bool CanReload() const;
+    
+    bool CanDoAction() const;
 
     template<typename T>
     T* FindFirstNotifyByClass(UAnimMontage* Animation)
