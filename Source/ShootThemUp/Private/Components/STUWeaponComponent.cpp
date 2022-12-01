@@ -9,8 +9,11 @@
 #include "Animations/STUWeaponChangeAnimNotify.h"
 #include "Animations/STUEquipFinishedAnimNotify.h"
 #include "Animations/STUReloadFinishedAnimNotify.h"
+#include "Animations/AnimUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All)
+
+constexpr  static int32 WeaponNum = 2;
 
 USTUWeaponComponent::USTUWeaponComponent()
 {
@@ -46,6 +49,8 @@ void USTUWeaponComponent::Reload()
 void USTUWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+    checkf(WeaponData.Num() == WeaponNum, TEXT("Our character can hold only %i weeapon items"), WeaponNum)
     
     CurrentWeaponIndex = 0;
     InitAnimations();
@@ -127,21 +132,36 @@ void USTUWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
 
 void USTUWeaponComponent::InitAnimations()
 {
-    const auto EquipFinishedNotify = FindFirstNotifyByClass<USTUEquipFinishedAnimNotify>(EquipAnimMontage);
+    const auto EquipFinishedNotify = AnimUtils::FindFirstNotifyByClass<USTUEquipFinishedAnimNotify>(EquipAnimMontage);
     if(EquipFinishedNotify)
     {
         EquipFinishedNotify->OnNotified.AddUObject(this, &USTUWeaponComponent::OnEquipFinished);
     }
-    const auto WeaponChangeNotify = FindFirstNotifyByClass<USTUWeaponChangeAnimNotify>(EquipAnimMontage);
-
+    else
+    {
+        UE_LOG(LogWeaponComponent, Error, TEXT("Equip aim notify is forgotten to set"));
+        checkNoEntry();
+    }
+    
+    const auto WeaponChangeNotify = AnimUtils::FindFirstNotifyByClass<USTUWeaponChangeAnimNotify>(EquipAnimMontage);
     if(WeaponChangeNotify)
     {
         WeaponChangeNotify->OnNotified.AddUObject(this, &USTUWeaponComponent::OnWeaponChange);
     }
+    else
+    {
+        UE_LOG(LogWeaponComponent, Error, TEXT("Weapon change aim notify is forgotten to set"));
+        checkNoEntry();
+    }
+    
     for (auto OneWeaponData : WeaponData)
     {
-        const auto ReloadFinishedNotify = FindFirstNotifyByClass<USTUReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
-        if(!ReloadFinishedNotify) continue;
+        const auto ReloadFinishedNotify = AnimUtils::FindFirstNotifyByClass<USTUReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
+        if(!ReloadFinishedNotify)
+        {
+            UE_LOG(LogWeaponComponent, Error, TEXT("Reload aim notify is forgotten to set"));
+            checkNoEntry();
+        }
         ReloadFinishedNotify->OnNotified.AddUObject(this, &USTUWeaponComponent::OnReloadFinished);
     }
 }
