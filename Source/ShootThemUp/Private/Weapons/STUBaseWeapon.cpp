@@ -21,12 +21,17 @@ ASTUBaseWeapon::ASTUBaseWeapon()
 
 void ASTUBaseWeapon::StartFire()
 {
-
+    bFireInProgress = true;
 }
 
 void ASTUBaseWeapon::StopFire()
 {
+    bFireInProgress = false;
+}
 
+bool ASTUBaseWeapon::IsFiring() const
+{
+    return bFireInProgress;
 }
 
 void ASTUBaseWeapon::BeginPlay()

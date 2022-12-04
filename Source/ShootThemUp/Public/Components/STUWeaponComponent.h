@@ -21,6 +21,7 @@ public:
     void StopFire();
     void NextWeapon();
     void Reload();
+    bool IsFiring() const;
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")

@@ -46,6 +46,11 @@ void USTUWeaponComponent::Reload()
     ChangeClip();
 }
 
+bool USTUWeaponComponent::IsFiring() const
+{
+    return  CurrentWeapon && CurrentWeapon->IsFiring();
+}
+
 void USTUWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();

@@ -11,6 +11,7 @@ ASTULauncherWeapon::ASTULauncherWeapon():ASTUBaseWeapon()
 
 void ASTULauncherWeapon::StartFire()
 {
+    Super::StartFire();
     MakeShot();
 }
 

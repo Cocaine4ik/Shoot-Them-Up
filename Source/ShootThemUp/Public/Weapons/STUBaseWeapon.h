@@ -21,6 +21,7 @@ public:
 
     virtual void StartFire();
     virtual void StopFire();
+    bool IsFiring() const;
 
     void ChangeClip();
     bool CanReload() const;
@@ -56,6 +57,8 @@ protected:
     void LogAmmo();
     
 private:
+    bool bFireInProgress = false;
+    
     FAmmoData CurrentAmmo;
 };
 
