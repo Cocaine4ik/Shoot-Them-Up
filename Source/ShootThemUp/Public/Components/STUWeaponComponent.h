@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "STUBaseWeapon.h"
 #include "Components/ActorComponent.h"
 #include "STUCoreTypes.h"
 #include "STUWeaponComponent.generated.h"
@@ -23,6 +24,8 @@ public:
     void Reload();
     bool IsFiring() const;
 
+    bool GetWeaponUIData(FWeaponUIData& UIData)const;
+    
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     TArray<FWeaponData> WeaponData;
