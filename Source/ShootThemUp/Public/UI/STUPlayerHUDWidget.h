@@ -6,6 +6,7 @@
 #include "STUCoreTypes.h"
 #include "Blueprint/UserWidget.h"
 #include "STUCoreTypes.h"
+#include "STUWeaponComponent.h"
 #include "STUPlayerHUDWidget.generated.h"
 
 /**
@@ -22,4 +23,11 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "UI")
     bool GetWeaponUIData(FWeaponUIData& UIData) const;
+
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    FString GetCurrentAmmoUIText() const;
+
+private:
+    USTUWeaponComponent* GetWeaponComponent() const;
+    bool GetCurrentAmmoData(FAmmoData& CurrentAmmo) const;
 };

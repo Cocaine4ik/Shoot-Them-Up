@@ -61,6 +61,16 @@ bool USTUWeaponComponent::GetWeaponUIData(FWeaponUIData& UIData) const
     return false;
 }
 
+bool USTUWeaponComponent::GetCurrentAmmoData(FAmmoData& CurrentAmmo) const
+{
+    if(CurrentWeapon)
+    {
+        CurrentAmmo = CurrentWeapon->GetCurrentAmmoData();
+        return true;
+    }
+    return false;
+}
+
 void USTUWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
