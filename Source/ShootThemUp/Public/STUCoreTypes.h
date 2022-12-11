@@ -5,7 +5,7 @@
 
 class ASTUBaseWeapon;
 
-DECLARE_MULTICAST_DELEGATE(FOnClipEmptySinature);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySinature, ASTUBaseWeapon*);
 
 USTRUCT(BlueprintType)
 struct FAmmoData
