@@ -10,6 +10,7 @@
 ASTUProjectile::ASTUProjectile()
 {
     PrimaryActorTick.bCanEverTick = false;
+    
     CollisionComponent = CreateDefaultSubobject<USphereComponent>("SphereComponent");
     CollisionComponent->InitSphereRadius(5.0f);
     CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
