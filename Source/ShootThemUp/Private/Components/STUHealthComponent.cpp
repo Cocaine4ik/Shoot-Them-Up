@@ -13,6 +13,20 @@ USTUHealthComponent::USTUHealthComponent()
     PrimaryComponentTick.bCanEverTick = false;
 }
 
+bool USTUHealthComponent::TryToAddHealth(float HealthAmount)
+{
+    if(IsHealthFull()) return false;
+    
+    SetHealth(Health + HealthAmount);
+    UE_LOG(LogHealthComponent, Display, TEXT("Health points were restored"));
+    return true;
+}
+
+bool USTUHealthComponent::IsHealthFull() const
+{
+    return FMath::IsNearlyEqual(Health, MaxHealth);
+}
+
 void USTUHealthComponent::BeginPlay()
 {
     Super::BeginPlay();
@@ -20,8 +34,6 @@ void USTUHealthComponent::BeginPlay()
     check(MaxHealth > 0)
     
     SetHealth(MaxHealth);
-    
-    OnHealthChanged.Broadcast(Health);
 
     AActor* ComponentOwner = GetOwner();
     if (ComponentOwner)
@@ -36,7 +48,6 @@ void USTUHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, co
     if (Damage <= 0.0f || IsDead() || !GetWorld()) return;
     
     SetHealth(Health - Damage);
-    OnHealthChanged.Broadcast(Health);
 
     GetWorld()->GetTimerManager().ClearTimer(AutoHealTimerHandle);
     
@@ -54,14 +65,14 @@ void USTUHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, co
 void USTUHealthComponent::SetHealth(const float NewHealth)
 {
     Health = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
+    OnHealthChanged.Broadcast(Health);
 }
 
 void USTUHealthComponent::AutoHealUpdate()
 {
     SetHealth(Health + HealModifier);
-    OnHealthChanged.Broadcast(Health);
 
-    if(Health == MaxHealth && GetWorld())
+    if(IsHealthFull() && GetWorld())
     {
         GetWorld()->GetTimerManager().ClearTimer(AutoHealTimerHandle);
     } 
