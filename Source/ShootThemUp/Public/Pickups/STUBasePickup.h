@@ -22,9 +22,13 @@ protected:
     USphereComponent* CollisionComponent; 
     virtual void BeginPlay() override;
     virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+    virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
     float RespawnTime = 5.0f;
+
+    UPROPERTY()
+    TArray<APawn*> OverlappingPawns;
 
 public:
     virtual void Tick(float DeltaTime) override;
