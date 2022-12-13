@@ -15,7 +15,8 @@ public class ShootThemUp : ModuleRules
 			"Engine", 
 			"InputCore",
 			"AnimGraphRuntime",
-			"Niagara"
+			"Niagara",
+			"PhysicsCore"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
