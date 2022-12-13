@@ -5,7 +5,9 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "DrawDebugHelpers.h"
+#include "STUWeaponFXComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Weapons/Components/STUWeaponFXComponent.h"
 
 ASTUProjectile::ASTUProjectile()
 {
@@ -20,6 +22,8 @@ ASTUProjectile::ASTUProjectile()
     MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
     MovementComponent->InitialSpeed = 2000.0f;
     MovementComponent->ProjectileGravityScale = 0.0f;
+
+    WeaponFXComponent = CreateDefaultSubobject<USTUWeaponFXComponent>("WeaponFXComponent");
 }
 
 void ASTUProjectile::BeginPlay()
@@ -28,6 +32,7 @@ void ASTUProjectile::BeginPlay()
 
     check(CollisionComponent)
     check(MovementComponent);
+    check(WeaponFXComponent)
     check(MovementComponent->InitialSpeed != 0)
     check(MovementComponent->ProjectileGravityScale == 0.0f)
     
@@ -49,7 +54,7 @@ void ASTUProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* 
         UDamageType::StaticClass(), {},this, GetController(), bDoFullDamage);
 
     DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 24, FColor::Red, false, 5.0f);
-    
+    WeaponFXComponent->PlayImpactEffects(Hit);
     Destroy();
 }
 
