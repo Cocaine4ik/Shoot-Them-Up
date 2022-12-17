@@ -6,6 +6,9 @@
 #include "DrawDebugHelpers.h"
 #include "STUHealthComponent.h"
 #include "Weapons/Components/STUWeaponFXComponent.h"
+#include "NiagaraComponent.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogRifleWeapon, All, All)
 
 ASTURifleWeapon::ASTURifleWeapon()
 {
@@ -22,6 +25,7 @@ void ASTURifleWeapon::BeginPlay()
 void ASTURifleWeapon::StartFire()
 {
     Super::StartFire();
+    InitMuzzleFX();
     GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &ASTURifleWeapon::MakeShot, TimeBetweenShorts, true);
     MakeShot();
 }
@@ -30,6 +34,7 @@ void ASTURifleWeapon::StopFire()
 {
     Super::StopFire();
     GetWorldTimerManager().ClearTimer(ShotTimerHandle);
+    SetMuzzleFXVisibility(false);
 }
 
 void ASTURifleWeapon::MakeShot()
@@ -85,4 +90,24 @@ void ASTURifleWeapon::MakeDamage(const FHitResult HitResult)
     if(!HitActor) return;
     if(!HitActor->FindComponentByClass<USTUHealthComponent>()) return;
     HitActor->TakeDamage(DamageAmount, FDamageEvent{}, GetPlayerController(), this);
+}
+
+void ASTURifleWeapon::InitMuzzleFX()
+{
+    if(!MuzzleFXComponent)
+    {
+        MuzzleFXComponent = SpawnMuzzleFX();
+    }
+    SetMuzzleFXVisibility(true);
+    UE_LOG(LogRifleWeapon, Display, TEXT("Set Muzzle"));
+}
+
+void ASTURifleWeapon::SetMuzzleFXVisibility(bool Visible)
+{
+    if(MuzzleFXComponent)
+    {
+        MuzzleFXComponent->SetPaused(!Visible);
+        MuzzleFXComponent->SetVisibility(Visible, true);
+        
+    }
 }

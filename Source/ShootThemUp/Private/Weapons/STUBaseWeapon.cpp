@@ -8,9 +8,11 @@
 #include "STUBaseCharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All)
-// Sets default values
+
 ASTUBaseWeapon::ASTUBaseWeapon()
 {
     PrimaryActorTick.bCanEverTick = false;
@@ -125,12 +127,22 @@ bool ASTUBaseWeapon::IsAmmoFull() const
     return CurrentAmmo.Clips == DefaultAmmo.Clips && CurrentAmmo.Bullets == DefaultAmmo.Bullets;
 }
 
+UNiagaraComponent* ASTUBaseWeapon::SpawnMuzzleFX()
+{
+    return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFx, //
+        WeaponMesh,                                               //
+        MuzzleSocketName,                                         //
+        FVector::ZeroVector,                                      //
+        FRotator::ZeroRotator,                                    //
+        EAttachLocation::SnapToTarget, true);
+}
+
 void ASTUBaseWeapon::ChangeClip()
 {
     CurrentAmmo.Bullets = DefaultAmmo.Bullets;
-    if(!CurrentAmmo.bInfinite)
+    if (!CurrentAmmo.bInfinite)
     {
-        if(CurrentAmmo.Clips == 0)
+        if (CurrentAmmo.Clips == 0)
         {
             UE_LOG(LogBaseWeapon, Warning, TEXT("No more clips!"));
             return;
