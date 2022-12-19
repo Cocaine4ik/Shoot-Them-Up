@@ -166,7 +166,7 @@ bool ASTUBaseWeapon::TryToAddAmmo(int32 ClipsAmount)
         UE_LOG(LogBaseWeapon, Display, TEXT("Ammo was empty"));
         
         // if clips num is one more + then default, we can add one - and after that make reload using OnClipEmpty event
-        CurrentAmmo.Clips = FMath::Clamp(CurrentAmmo.Clips, 0, DefaultAmmo.Clips + 1);
+        CurrentAmmo.Clips = FMath::Clamp(ClipsAmount, 0, DefaultAmmo.Clips + 1);
         OnClipEmpty.Broadcast(this);
     }
     else if(CurrentAmmo.Clips < DefaultAmmo.Clips)
