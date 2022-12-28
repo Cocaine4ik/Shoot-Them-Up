@@ -6,7 +6,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "STUUtils.h"
 
-DEFINE_LOG_CATEGORY_STATIC(LogChangeWeaponService, All, All)
 USTUChangeWeaponService::USTUChangeWeaponService()
 {
     NodeName = "Change Weapon";
