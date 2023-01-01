@@ -19,4 +19,5 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
     float HealthPercent  = 0.6f;
+    
 };
