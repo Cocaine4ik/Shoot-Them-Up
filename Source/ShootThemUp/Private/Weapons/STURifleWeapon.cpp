@@ -9,8 +9,6 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 
-DEFINE_LOG_CATEGORY_STATIC(LogRifleWeapon, All, All)
-
 ASTURifleWeapon::ASTURifleWeapon()
 {
     WeaponFXComponent = CreateDefaultSubobject<USTUWeaponFXComponent>("WeaponFXComponent");
@@ -96,7 +94,6 @@ void ASTURifleWeapon::InitMuzzleFX()
         MuzzleFXComponent = SpawnMuzzleFX();
     }
     SetMuzzleFXVisibility(true);
-    UE_LOG(LogRifleWeapon, Display, TEXT("Set Muzzle"));
 }
 
 void ASTURifleWeapon::SetMuzzleFXVisibility(bool Visible)

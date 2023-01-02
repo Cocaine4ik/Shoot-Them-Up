@@ -22,7 +22,7 @@ void USTUAIWeaponComponent::NextWeapon()
 {
     if(!CanDoAction()) return;
     
-    UE_LOG(LogAIWeaponComponent, Display, TEXT("Next Weapon"));
+    // UE_LOG(LogAIWeaponComponent, Display, TEXT("Next Weapon"));
     
     int32 NextIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
     while(NextIndex != CurrentWeaponIndex)

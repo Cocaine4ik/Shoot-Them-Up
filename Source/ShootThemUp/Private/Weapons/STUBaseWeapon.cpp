@@ -160,7 +160,7 @@ void ASTUBaseWeapon::ChangeClip()
         }
         CurrentAmmo.Clips--;
     }
-    UE_LOG(LogBaseWeapon, Display, TEXT("....Change Clip...."));
+    // UE_LOG(LogBaseWeapon, Display, TEXT("....Change Clip...."));
 }
 
 bool ASTUBaseWeapon::CanReload() const
