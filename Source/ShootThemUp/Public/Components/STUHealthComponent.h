@@ -67,5 +67,6 @@ private:
     void AutoHealUpdate();
 
     void PlayCameraShake();
-    
+
+    void Killed(AController* KillerController);
 };
