@@ -20,9 +20,10 @@ public:
     FLinearColor GetTeamColor() const { return TeamColor; }
 
     void AddKill() { ++KillsNum; }
-
+    int32 GetKilsNum() const{ return KillsNum; }
+    
     void AddDeath() { ++DeathsNum; }
-    int32 GetDeathNum() const { return  DeathsNum; }
+    int32 GetDeathsNum() const { return  DeathsNum; }
 
     void LogInfo();
     
