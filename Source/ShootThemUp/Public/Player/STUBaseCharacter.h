@@ -3,16 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Camera/CameraComponent.h"
-#include "Components/TextRenderComponent.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "STUBaseCharacter.generated.h"
 
-class UCameraComponent;
-class USpringArmComponent;
 class USTUHealthComponent;
-class UTextRenderComponent;
 class USTUWeaponComponent;
 
 UCLASS()
@@ -25,17 +19,9 @@ public:
     ASTUBaseCharacter(const FObjectInitializer& ObjInit);
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    USpringArmComponent* SpringArmComponent;
-    
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UCameraComponent* CameraComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USTUHealthComponent* HealthComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UTextRenderComponent* HealthTextComponent;
     
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USTUWeaponComponent* WeaponComponent;
@@ -59,14 +45,10 @@ protected:
     virtual void OnDeath();
 
 public:
-    // Called every frame
     virtual void Tick(float DeltaTime) override;
 
-    // Called to bind functionality to input
-    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
     UFUNCTION(BlueprintCallable, Category = "Movement")
-    bool IsRunning() const;
+    virtual bool IsRunning() const;
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
     float GetMoveDirection() const;
@@ -74,16 +56,7 @@ public:
     void SetPlayerColor(const FLinearColor& Color);
 
 private:
-    bool bWantsToRun = false;
-    bool bIsMovingForward = false;
-    
-    void MoveForward(float Amount);
-    void MoveRight(float Amount);
-    void OnStartRunning();
-    void OnStopRunning();
-    
     void OnHealthChanged(float Health, float HealthDelta);
-    void OnStartFire();
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult& Hit);
