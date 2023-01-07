@@ -37,4 +37,6 @@ private:
     bool GetCurrentAmmoData(FAmmoData& CurrentAmmo) const;
 
     void OnHealthChanged(float Health, float HealthDelta);
+
+    void OnNewPawn(APawn* NewPawn);
 };
