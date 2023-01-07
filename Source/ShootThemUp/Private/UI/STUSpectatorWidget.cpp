@@ -6,11 +6,9 @@
 
 bool USTUSpectatorWidget::GetRespawnTime(int32& CountDownTime) const
 {
-    const auto PawnName = GetOwningPlayer()->GetName();
-    
     const auto RespawnComponent = STUUtils::GetSTUPlayerComponent<USTURespawnComponent>(GetOwningPlayer());
-
-    if(!RespawnComponent) return false;
+    
+    if(!RespawnComponent || !RespawnComponent->IsRespawnAvailable()) return false;
     
     CountDownTime = RespawnComponent->GetRespawnCountDown();
     return true;

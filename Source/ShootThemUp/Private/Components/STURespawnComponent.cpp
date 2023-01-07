@@ -1,6 +1,5 @@
 // Shoot Them Up Game. All Rights Reserved.
 
-
 #include "Components/STURespawnComponent.h"
 #include "ShootThemUp/STUGameModeBase.h"
 
@@ -20,6 +19,14 @@ void USTURespawnComponent::Respawn(int32 RespawnTime)
 bool USTURespawnComponent::IsRespawnInProgress() const
 {
     return GetWorld() && GetWorld()->GetTimerManager().IsTimerActive(RespawnTimerHandle);
+}
+
+bool USTURespawnComponent::IsRespawnAvailable() const
+{
+    if(!GetWorld()) return false;
+    const auto GameMode = Cast<ASTUGameModeBase>(GetWorld()->GetAuthGameMode());
+    
+    return GameMode && GameMode->IsRespawnAvailable();
 }
 
 void USTURespawnComponent::RespawnTimerUpdate()
