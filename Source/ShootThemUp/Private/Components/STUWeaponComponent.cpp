@@ -244,7 +244,8 @@ void USTUWeaponComponent::OnReloadFinished(USkeletalMeshComponent* MeshComponent
 
 bool USTUWeaponComponent::CanDoAction() const
 {
-    return CurrentWeapon && !bEquipAnimInProgress && !bReloadAnimInProgress;
+    const auto Character = Cast<ASTUBaseCharacter>(GetOwner());
+    return CurrentWeapon && !bEquipAnimInProgress && !bReloadAnimInProgress && !Character->IsRunning();
 }
 
 bool USTUWeaponComponent::CanReload() const
