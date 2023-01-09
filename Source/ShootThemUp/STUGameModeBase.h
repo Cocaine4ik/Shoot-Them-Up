@@ -8,6 +8,7 @@
 #include "STUGameModeBase.generated.h"
 
 class AAIController;
+class ASTUPlayerStart;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUGameModeBase : public AGameModeBase
@@ -17,8 +18,10 @@ class SHOOTTHEMUP_API ASTUGameModeBase : public AGameModeBase
 public:
     ASTUGameModeBase();
 
+    virtual void BeginPlay() override;
     virtual void StartPlay() override;
     virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
+    virtual AActor* FindPlayerStart_Implementation(AController* Player, const FString& IncomingName) override;
 
     void Killed(AController* KillerController, AController* VictimController);
 
@@ -29,6 +32,7 @@ public:
     void RespawnRequest(AController* Controller);
 
     bool IsRespawnAvailable() const;
+
     
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
@@ -61,4 +65,6 @@ private:
     void StartRespawn(AController* Controller);
 
     void GameOver();
+
+    int32 GetPlayerStartsCount();
 };

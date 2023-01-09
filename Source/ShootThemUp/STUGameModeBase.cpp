@@ -11,6 +11,7 @@
 #include "STUUtils.h"
 #include "Components/STURespawnComponent.h"
 #include "EngineUtils.h"
+#include "STUPlayerStart.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogSTUGameModeBase, All, All)
 
@@ -22,6 +23,12 @@ ASTUGameModeBase::ASTUGameModeBase()
     PlayerControllerClass = ASTUPlayerController::StaticClass();
     HUDClass = ASTUGameHUD::StaticClass();
     PlayerStateClass = ASTUPlayerState::StaticClass();
+}
+
+void ASTUGameModeBase::BeginPlay()
+{
+    Super::BeginPlay();
+    checkf(GetPlayerStartsCount() == GameData.PlayersNum, TEXT("Player Starts Count is not equal Players Num"))
 }
 
 void ASTUGameModeBase::StartPlay()
@@ -42,6 +49,50 @@ UClass* ASTUGameModeBase::GetDefaultPawnClassForController_Implementation(AContr
         return AIPawnClass;
     }
     return Super::GetDefaultPawnClassForController_Implementation(InController);
+}
+
+AActor* ASTUGameModeBase::FindPlayerStart_Implementation(AController* Player, const FString& IncomingName)
+{
+    UWorld* World = GetWorld();
+    
+    const auto PlayerState = Player->GetPlayerState<ASTUPlayerState>();
+    
+    if (PlayerState)
+    {    
+        for (TActorIterator<ASTUPlayerStart> It(World); It; ++It)
+        {
+            ASTUPlayerStart* Start = *It;
+            if (Start && Start->GetTeamID() == PlayerState->GetTeamID())
+            {
+                return Start;
+            }
+        }
+    }
+
+    // Always pick StartSpot at start of match
+    if (ShouldSpawnAtStartSpot(Player))
+    {
+        if (AActor* PlayerStartSpot = Player->StartSpot.Get())
+        {
+            return PlayerStartSpot;
+        }
+        else
+        {
+            UE_LOG(LogGameMode, Error, TEXT("FindPlayerStart: ShouldSpawnAtStartSpot returned true but the Player StartSpot was null."));
+        }
+    }
+    AActor* BestStart = ChoosePlayerStart(Player);
+    if (BestStart == nullptr)
+    {
+        // No player start found
+        UE_LOG(LogGameMode, Log, TEXT("FindPlayerStart: PATHS NOT DEFINED or NO PLAYERSTART with positive rating"));
+
+        // This is a bit odd, but there was a complex chunk of code that in the end always resulted in this, so we may as well just 
+        // short cut it down to this.  Basically we are saying spawn at 0,0,0 if we didn't find a proper player start
+        BestStart = World->GetWorldSettings();
+    }
+
+    return BestStart;
 }
 
 void ASTUGameModeBase::Killed(AController* KillerController, AController* VictimController)
@@ -94,6 +145,18 @@ void ASTUGameModeBase::GameOver()
             Pawn->DisableInput(nullptr);
         }
     }
+}
+
+int32 ASTUGameModeBase::GetPlayerStartsCount()
+{
+    int32 Count = 0;
+        
+    if(!GetWorld()) return Count;
+    for (TActorIterator<ASTUPlayerStart> It(GetWorld()); It; ++It)
+    {
+        Count++;
+    }
+    return Count;
 }
 
 void ASTUGameModeBase::LogPlayerInfo()
