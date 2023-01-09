@@ -18,6 +18,8 @@ class SHOOTTHEMUP_API ASTUGameModeBase : public AGameModeBase
 public:
     ASTUGameModeBase();
 
+    FOnMatchStateChangedSignature OnMatchStateChanged;
+    
     virtual void BeginPlay() override;
     virtual void StartPlay() override;
     virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
@@ -45,6 +47,7 @@ protected:
     FGameData GameData;
 
 private:
+    ESTUMatchState MatchState = ESTUMatchState::WaitingToStart;
     int32 CurrentRound = 1;
     int32 RoundCountDown = 0; // in seconds
     FTimerHandle GameRoundTimerHandle;
@@ -67,4 +70,6 @@ private:
     void GameOver();
 
     int32 GetPlayerStartsCount();
+
+    void SetMatchState(ESTUMatchState State);
 };
