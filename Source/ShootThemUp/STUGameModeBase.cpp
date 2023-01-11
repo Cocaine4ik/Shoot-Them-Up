@@ -123,6 +123,24 @@ bool ASTUGameModeBase::IsRespawnAvailable() const
     return RoundCountDown > MinRoundTimeForRespawn + GameData.RespawnTime;
 }
 
+bool ASTUGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
+{
+    const auto PauseSet = Super::SetPause(PC, CanUnpauseDelegate);
+    SetMatchState(ESTUMatchState::Pause);
+    
+    return PauseSet;
+}
+
+bool ASTUGameModeBase::ClearPause()
+{
+    const auto PauseCleared = Super::ClearPause();
+    if(PauseCleared)
+    {
+        SetMatchState(ESTUMatchState::InProgress);
+    }
+    return PauseCleared;
+}
+
 void ASTUGameModeBase::StartRespawn(AController* Controller)
 {
     const auto bRespawnAvailable = IsRespawnAvailable();
