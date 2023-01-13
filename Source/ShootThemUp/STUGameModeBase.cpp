@@ -28,7 +28,7 @@ ASTUGameModeBase::ASTUGameModeBase()
 void ASTUGameModeBase::BeginPlay()
 {
     Super::BeginPlay();
-    checkf(GetPlayerStartsCount() == GameData.PlayersNum, TEXT("Player Starts Count is not equal Players Num"))
+    checkf(GetPlayerStartsCount() >= GameData.PlayersNum, TEXT("Player Starts Count is not more or equal Players Num"))
 }
 
 void ASTUGameModeBase::StartPlay()
@@ -188,6 +188,18 @@ void ASTUGameModeBase::SetMatchState(ESTUMatchState State)
     OnMatchStateChanged.Broadcast(MatchState);
 }
 
+FString ASTUGameModeBase::GenerateBotName()
+{
+    if(BotNames.IsEmpty()) return "Bot";
+    
+    const auto BotNameNum = FMath::RandRange(0, BotNames.Num() - 1);
+    const auto BotName = BotNames[BotNameNum];
+    BotNames.RemoveAtSwap(BotNameNum, 1, false);
+    BotNames.Shrink();
+    
+    return BotName;
+}
+
 void ASTUGameModeBase::LogPlayerInfo()
 {
     if(!GetWorld()) return;
@@ -280,6 +292,10 @@ void ASTUGameModeBase::CreateTeamsInfo()
 
         PlayerSate->SetTeamID(TeamID);
         PlayerSate->SetTeamColor(DetermineColorByTeamID(TeamID));
+        
+        const auto BotName = GenerateBotName();
+        PlayerSate->SetPlayerName(Controller->IsPlayerController() ? "Player" : BotName);
+        
         SetPlayerColor(Controller);
         
         TeamID = TeamID == 1 ? 2 : 1;

@@ -47,7 +47,10 @@ protected:
     
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     FGameData GameData;
-
+    
+    UPROPERTY(EditDefaultsOnly, Category = "Game")
+    TArray<FString> BotNames;
+    
 private:
     ESTUMatchState MatchState = ESTUMatchState::WaitingToStart;
     int32 CurrentRound = 1;
@@ -74,4 +77,6 @@ private:
     int32 GetPlayerStartsCount();
 
     void SetMatchState(ESTUMatchState State);
+
+    FString GenerateBotName();
 };
