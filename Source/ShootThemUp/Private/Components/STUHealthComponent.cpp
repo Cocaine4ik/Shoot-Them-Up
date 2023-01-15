@@ -8,7 +8,7 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "Camera/CameraShakeBase.h"
-#include "ShootThemUp/STUGameModeBase.h"
+#include "STUGameModeBase.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All)
 

@@ -2,7 +2,7 @@
 
 #include "UI/STUGameDataWidget.h"
 #include "Player/STUPlayerState.h"
-#include "ShootThemUp/STUGameModeBase.h"
+#include "STUGameModeBase.h"
 #include "Kismet/KismetStringLibrary.h"
 
 FString USTUGameDataWidget::GetKillsDeathsText() const

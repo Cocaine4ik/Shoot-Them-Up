@@ -3,7 +3,7 @@
 #include "UI/STUGameOverWidget.h"
 
 #include "STUPlayerState.h"
-#include "ShootThemUp/STUGameModeBase.h"
+#include "STUGameModeBase.h"
 #include "Player/STUPlayerStart.h"
 #include "UI/STUPlayerStatRowWidget.h"
 #include "Components/VerticalBox.h"

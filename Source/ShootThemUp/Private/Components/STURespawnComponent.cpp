@@ -1,7 +1,7 @@
 // Shoot Them Up Game. All Rights Reserved.
 
 #include "Components/STURespawnComponent.h"
-#include "ShootThemUp/STUGameModeBase.h"
+#include "STUGameModeBase.h"
 
 USTURespawnComponent::USTURespawnComponent()
 {

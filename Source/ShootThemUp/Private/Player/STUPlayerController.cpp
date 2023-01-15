@@ -6,7 +6,7 @@
 #include "STUGameHUD.h"
 #include "Components/STURespawnComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "ShootThemUp/STUGameModeBase.h"
+#include "STUGameModeBase.h"
 
 ASTUPlayerController::ASTUPlayerController()
 {

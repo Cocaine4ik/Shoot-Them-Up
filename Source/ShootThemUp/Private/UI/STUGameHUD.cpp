@@ -5,7 +5,7 @@
 #include "Engine/Canvas.h"
 #include "Blueprint/UserWidget.h"
 #include "Logging/LogMacros.h"
-#include "ShootThemUp/STUGameModeBase.h"
+#include "STUGameModeBase.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogSTUGameHUD, All, All)
 
