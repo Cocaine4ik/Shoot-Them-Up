@@ -5,6 +5,11 @@
 #include "Animation/AnimSubsystem_NodeRelevancy.h"
 #include "GameFramework/GameModeBase.h"
 #include "Components/Button.h"
+#include "STUGameInstance.h"
+#include "Logging/LogMacros.h"
+#include "Kismet/GameplayStatics.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogSTUPauseWidget, All, All)
 
 void USTUPauseWidget::NativeOnInitialized()
 {
@@ -14,6 +19,11 @@ void USTUPauseWidget::NativeOnInitialized()
     {
         ClearPauseButton->OnClicked.AddDynamic(this, &USTUPauseWidget::OnClearPause);
     }
+    if(MainMenuButton)
+    {
+        MainMenuButton->OnClicked.AddDynamic(this, &USTUPauseWidget::OnMainMenu);
+    }
+    
 }
 
 void USTUPauseWidget::OnClearPause()
@@ -22,4 +32,20 @@ void USTUPauseWidget::OnClearPause()
 
     GetWorld()->GetAuthGameMode()->ClearPause();
     
+}
+
+void USTUPauseWidget::OnMainMenu()
+{
+    if(!GetWorld()) return;
+
+    const auto STUGameInstance = GetWorld()->GetGameInstance<USTUGameInstance>();
+    if(!STUGameInstance) return;
+
+    if(STUGameInstance->GetMainMenuLevelName().IsNone())
+    {
+        UE_LOG(LogSTUPauseWidget, Error, TEXT("Level name is NONE"));
+        return;
+    }
+    
+    UGameplayStatics::OpenLevel(this, STUGameInstance->GetMainMenuLevelName());
 }

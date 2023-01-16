@@ -10,6 +10,10 @@
 #include "STUUtils.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "STUGameInstance.h"
+#include "Logging/LogMacros.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogSTUGameOverWidget, All, All)
 
 void USTUGameOverWidget::NativeOnInitialized()
 {
@@ -26,6 +30,10 @@ void USTUGameOverWidget::NativeOnInitialized()
     if(ResetLevelButton)
     {
         ResetLevelButton->OnClicked.AddDynamic(this, &USTUGameOverWidget::OnResetLevel);
+    }
+    if(MainMenuButton)
+    {
+        MainMenuButton->OnClicked.AddDynamic(this, &USTUGameOverWidget::OnMainMenu);
     }
 }
 
@@ -68,4 +76,20 @@ void USTUGameOverWidget::OnResetLevel()
 {
     const FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(this);
     UGameplayStatics::OpenLevel(this, FName(CurrentLevelName));
+}
+
+void USTUGameOverWidget::OnMainMenu()
+{
+    if(!GetWorld()) return;
+
+    const auto STUGameInstance = GetWorld()->GetGameInstance<USTUGameInstance>();
+    if(!STUGameInstance) return;
+
+    if(STUGameInstance->GetMainMenuLevelName().IsNone())
+    {
+        UE_LOG(LogSTUGameOverWidget, Error, TEXT("Level name is NONE"));
+        return;
+    }
+    
+    UGameplayStatics::OpenLevel(this, STUGameInstance->GetMainMenuLevelName());
 }

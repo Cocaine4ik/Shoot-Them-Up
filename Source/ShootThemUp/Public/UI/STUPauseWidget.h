@@ -17,9 +17,15 @@ protected:
     UPROPERTY(meta = (BindWidget))
     UButton* ClearPauseButton;
 
+    UPROPERTY(meta = (BindWidget))
+    UButton* MainMenuButton;
+
     virtual void NativeOnInitialized() override;
 
 private:
     UFUNCTION()
     void OnClearPause();
+
+    UFUNCTION()
+    void OnMainMenu();
 };
