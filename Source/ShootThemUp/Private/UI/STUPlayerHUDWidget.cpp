@@ -7,6 +7,8 @@
 #include "Components/STUHealthComponent.h"
 #include "Components/STUWeaponComponent.h"
 #include "STUUtils.h"
+#include "Components/ProgressBar.h"
+#include "Player/STUPlayerState.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogPlayerHUDWidget, All, All)
 
@@ -26,18 +28,28 @@ bool USTUPlayerHUDWidget::GetWeaponUIData(FWeaponUIData& UIData) const
     return WeaponComponent->GetWeaponUIData(UIData);
 }
 
-FString USTUPlayerHUDWidget::GetCurrentAmmoUIText() const
+FString USTUPlayerHUDWidget::GetCurrentBulletsUIText() const
+{
+    FAmmoData CurrentAmmo;
+    if(GetCurrentAmmoData(CurrentAmmo))
+    {
+        return FormatBullets(CurrentAmmo.Bullets);
+    }
+    return FString(TEXT("Error"));
+}
+
+FString USTUPlayerHUDWidget::GetCurrentClipsUIText() const
 {
     FAmmoData CurrentAmmo;
     if(GetCurrentAmmoData(CurrentAmmo))
     {
         if(!CurrentAmmo.bInfinite)
         {
-            return FString::FromInt(CurrentAmmo.Bullets) + FString(TEXT(" / ")) + FString::FromInt(CurrentAmmo.Clips);
+            return FString::FromInt(CurrentAmmo.Clips);
         }
-        return FString::FromInt(CurrentAmmo.Bullets) + FString(TEXT(" / ∞"));
+        return FString(TEXT("∞"));
     }
-    return FString(TEXT("Error / Error"));
+    return FString(TEXT("Error"));
 }
 
 bool USTUPlayerHUDWidget::IsPlayerAlive() const
@@ -58,6 +70,7 @@ void USTUPlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)
     {
         OnTakeDamage();
     }
+    UpdateHealthBar();
 }
 
 void USTUPlayerHUDWidget::OnNewPawn(APawn* NewPawn)
@@ -66,6 +79,15 @@ void USTUPlayerHUDWidget::OnNewPawn(APawn* NewPawn)
     if(HealthComponent)
     {
         HealthComponent->OnHealthChanged.AddUObject(this, &USTUPlayerHUDWidget::OnHealthChanged);
+    }
+    UpdateHealthBar();
+}
+
+void USTUPlayerHUDWidget::UpdateHealthBar()
+{
+    if(HealthProgressBar)
+    {
+        HealthProgressBar->SetFillColorAndOpacity(GetHealthPercent() > PercentColorThreshold ? GoodColor : BadColor);
     }
 }
 
@@ -85,4 +107,44 @@ bool USTUPlayerHUDWidget::GetCurrentAmmoData(FAmmoData& CurrentAmmo) const
     const auto WeaponComponent = STUUtils::GetSTUPlayerComponent<USTUWeaponComponent>(GetOwningPlayerPawn());
     if(!WeaponComponent) return false;
     return WeaponComponent->GetCurrentAmmoData(CurrentAmmo);
+}
+
+FString USTUPlayerHUDWidget::GetKillsDeathsText() const
+{
+    const auto KillsNum = GetKillsNum();
+    const auto DeathsNum = GetDeathsNum();
+    
+    return FString::Printf(TEXT("%i/%i"), KillsNum, DeathsNum);
+}
+
+ASTUPlayerState* USTUPlayerHUDWidget::GetSTUPlayerState() const
+{
+    return GetOwningPlayer() ? Cast<ASTUPlayerState>(GetOwningPlayer()->PlayerState) : nullptr;
+}
+
+int32 USTUPlayerHUDWidget::GetKillsNum() const
+{
+    const auto PlayerState = GetSTUPlayerState();
+    return PlayerState ? PlayerState->GetKilsNum() : 0;
+}
+
+int32 USTUPlayerHUDWidget::GetDeathsNum() const
+{
+    const auto PlayerState = GetSTUPlayerState();
+    return PlayerState ? PlayerState->GetDeathsNum() : 0;
+}
+
+FString USTUPlayerHUDWidget::FormatBullets(int32 BulletsNum) const
+{
+    const int32 MaxLen = 3;
+    const TCHAR PrefixSymbol = '0';
+
+    auto BulletStr = FString::FromInt(BulletsNum);
+    const auto SymbolsNumtoAdd = MaxLen - BulletStr.Len();
+
+    if(SymbolsNumtoAdd > 0)
+    {
+        BulletStr = FString::ChrN(SymbolsNumtoAdd, PrefixSymbol).Append(BulletStr);
+    }
+    return BulletStr;
 }

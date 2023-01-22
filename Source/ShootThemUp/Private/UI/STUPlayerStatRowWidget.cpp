@@ -3,6 +3,7 @@
 #include "UI/STUPlayerStatRowWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
+#include "Logging/LogMacros.h"
 
 void USTUPlayerStatRowWidget::SetPlayerName(const FText& Text)
 {
@@ -32,4 +33,10 @@ void USTUPlayerStatRowWidget::SetPlayerIndicatorVisibility(bool Visible)
 {
     if(!PlayerIndicatorImage) return;
     PlayerIndicatorImage->SetVisibility(Visible ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+}
+
+void USTUPlayerStatRowWidget::SetTeamColor(const FLinearColor& Color)
+{
+    if(!TeamImage) return;
+    TeamImage->SetColorAndOpacity(Color);
 }

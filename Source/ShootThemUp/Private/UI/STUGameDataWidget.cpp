@@ -1,17 +1,9 @@
 // Shoot Them Up Game. All Rights Reserved.
 
 #include "UI/STUGameDataWidget.h"
-#include "Player/STUPlayerState.h"
 #include "STUGameModeBase.h"
 #include "Kismet/KismetStringLibrary.h"
 
-FString USTUGameDataWidget::GetKillsDeathsText() const
-{
-    const auto KillsNum = GetKillsNum();
-    const auto DeathsNum = GetDeathsNum();
-    
-    return FString::Printf(TEXT("Kills: %i | Deaths: %i"), KillsNum, DeathsNum);
-}
 
 FString USTUGameDataWidget::GetRoundsText() const
 {
@@ -31,23 +23,6 @@ FString USTUGameDataWidget::GetRoundCountDownText() const
 ASTUGameModeBase* USTUGameDataWidget::GetSTUGameMode() const
 {
     return GetWorld() ? Cast<ASTUGameModeBase>(GetWorld()->GetAuthGameMode()) : nullptr;
-}
-
-ASTUPlayerState* USTUGameDataWidget::GetSTUPlayerState() const
-{
-    return GetOwningPlayer() ? Cast<ASTUPlayerState>(GetOwningPlayer()->PlayerState) : nullptr;
-}
-
-int32 USTUGameDataWidget::GetKillsNum() const
-{
-    const auto PlayerState = GetSTUPlayerState();
-    return PlayerState ? PlayerState->GetKilsNum() : 0;
-}
-
-int32 USTUGameDataWidget::GetDeathsNum() const
-{
-    const auto PlayerState = GetSTUPlayerState();
-    return PlayerState ? PlayerState->GetDeathsNum() : 0;
 }
 
 int32 USTUGameDataWidget::GetCurrentRoundNum() const
