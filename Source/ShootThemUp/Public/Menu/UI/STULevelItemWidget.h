@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "STUCoreTypes.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/STUBaseWidget.h"
 #include "STULevelItemWidget.generated.h"
 
 class UButton;

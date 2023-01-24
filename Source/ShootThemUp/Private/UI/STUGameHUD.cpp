@@ -2,6 +2,8 @@
 
 
 #include "UI/STUGameHUD.h"
+
+#include "STUBaseWidget.h"
 #include "Engine/Canvas.h"
 #include "Blueprint/UserWidget.h"
 #include "Logging/LogMacros.h"
@@ -20,16 +22,17 @@ void ASTUGameHUD::BeginPlay()
 {
     Super::BeginPlay();
 
-    GameWidgets.Add(ESTUMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHudWidgetClass));
-    GameWidgets.Add(ESTUMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
-    GameWidgets.Add(ESTUMatchState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
+    GameWidgets.Add(ESTUMatchState::InProgress, CreateWidget<USTUBaseWidget>(GetWorld(), PlayerHudWidgetClass));
+    GameWidgets.Add(ESTUMatchState::Pause, CreateWidget<USTUBaseWidget>(GetWorld(), PauseWidgetClass));
+    GameWidgets.Add(ESTUMatchState::GameOver, CreateWidget<USTUBaseWidget>(GetWorld(), GameOverWidgetClass));
     
-    for (auto GamWidgetPair : GameWidgets)
+    for (auto GameWidgetPair : GameWidgets)
     {
-        const auto GameWidget = GamWidgetPair.Value;
+        const auto GameWidget = GameWidgetPair.Value;
         if(!GameWidget) continue;;
         GameWidget->AddToViewport();
         GameWidget->SetVisibility(ESlateVisibility::Hidden);
+        GameWidget->Show();
     }
     
     if(GetWorld())

@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/STUBaseWidget.h"
 #include "STUGameDataWidget.generated.h"
 
 class ASTUPlayerState;
 class ASTUGameModeBase;
+
 UCLASS()
 class SHOOTTHEMUP_API USTUGameDataWidget : public UUserWidget
 {
