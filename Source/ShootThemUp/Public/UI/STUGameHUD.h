@@ -34,7 +34,7 @@ private:
     TMap<ESTUMatchState, USTUBaseWidget*> GameWidgets;
 
     UPROPERTY()
-    UUserWidget* CurrentWidget = nullptr;
+    USTUBaseWidget* CurrentWidget = nullptr;
     
     void DrawCrossHair();
     void OnMatchStateChanged(ESTUMatchState State);
