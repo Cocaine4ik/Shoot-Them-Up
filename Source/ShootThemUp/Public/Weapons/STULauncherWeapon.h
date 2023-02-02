@@ -8,6 +8,7 @@
 #include "STULauncherWeapon.generated.h"
 
 class ASTUProjectile;
+class USoundCue;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTULauncherWeapon : public ASTUBaseWeapon
@@ -27,6 +28,9 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
     bool bDoFullDamage = false;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    USoundCue* NoAmmoSound = false;
     
     virtual void MakeShot() override;
 };
