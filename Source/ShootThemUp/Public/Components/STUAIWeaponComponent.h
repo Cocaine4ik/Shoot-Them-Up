@@ -14,4 +14,5 @@ class SHOOTTHEMUP_API USTUAIWeaponComponent : public USTUWeaponComponent
 public:
     virtual void StartFire() override;
     virtual void NextWeapon() override;
+    
 };

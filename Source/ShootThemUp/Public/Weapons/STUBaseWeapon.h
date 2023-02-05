@@ -35,6 +35,8 @@ public:
     bool TryToAddAmmo(int32 ClipsAmount);
     bool IsAmmoEmpty() const;
     bool IsAmmoFull() const;
+
+    virtual void Zoom(bool bEnabled);
     
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")

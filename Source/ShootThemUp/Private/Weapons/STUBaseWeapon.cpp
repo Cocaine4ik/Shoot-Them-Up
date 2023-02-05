@@ -130,6 +130,10 @@ bool ASTUBaseWeapon::IsAmmoFull() const
     return CurrentAmmo.Clips == DefaultAmmo.Clips && CurrentAmmo.Bullets == DefaultAmmo.Bullets;
 }
 
+void ASTUBaseWeapon::Zoom(bool bEnabled)
+{
+}
+
 UNiagaraComponent* ASTUBaseWeapon::SpawnMuzzleFX()
 {
     return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFx, //
