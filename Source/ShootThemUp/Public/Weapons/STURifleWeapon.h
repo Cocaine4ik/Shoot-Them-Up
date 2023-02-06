@@ -56,11 +56,11 @@ private:
     UPROPERTY()
     UAudioComponent* FireAudioComponent;
     
-    void MakeDamage(const FHitResult HitResult);
+    void MakeDamage(const FHitResult& HitResult);
     void InitFX();
     void SetFXActive(bool Visible);
     void SpawnTraceFX(const FVector& TraceStart, const FVector TraceEnd);
-
+ 
     AController* GetController() const;
 
     float DefaultCameraFOV = 90.0f;

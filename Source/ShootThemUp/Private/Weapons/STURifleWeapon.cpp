@@ -95,12 +95,15 @@ bool ASTURifleWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
     return true;
 }
 
-void ASTURifleWeapon::MakeDamage(const FHitResult HitResult)
+void ASTURifleWeapon::MakeDamage(const FHitResult& HitResult)
 {
-    const auto HitActor = HitResult.GetActor();
-    if(!HitActor) return;
-    if(!HitActor->FindComponentByClass<USTUHealthComponent>()) return;
-    HitActor->TakeDamage(DamageAmount, FDamageEvent{}, GetController(), this);
+    const auto DamagedActor = HitResult.GetActor();
+    if(!DamagedActor) return;
+    if(!DamagedActor->FindComponentByClass<USTUHealthComponent>()) return;
+
+    FPointDamageEvent PointDamageEvent;
+    PointDamageEvent.HitInfo = HitResult;
+    DamagedActor->TakeDamage(DamageAmount, PointDamageEvent, GetController(), this);
 }
 
 void ASTURifleWeapon::InitFX()
