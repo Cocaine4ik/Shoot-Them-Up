@@ -9,6 +9,7 @@
 #include "Camera/CameraShakeBase.h"
 #include "STUGameModeBase.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Perception/AISense_Damage.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All)
 
@@ -88,6 +89,8 @@ void USTUHealthComponent::ApplyDamage(float Damage, AController* InstigatedBy)
     }
     PlayCameraShake();
     // UE_LOG(LogHealthComponent, Display, TEXT("Damage: %f"), Damage);
+
+    ReportDamageEvent(Damage, InstigatedBy);
 }
 
 float USTUHealthComponent::GetPointDamageModifiers(AActor* DamagedActor, const FName& BoneName)
@@ -103,6 +106,18 @@ float USTUHealthComponent::GetPointDamageModifiers(AActor* DamagedActor, const F
     
     return DamageModifiers[PhysMaterial];
     
+}
+
+void USTUHealthComponent::ReportDamageEvent(float Damage, AController* InstigatedBy)
+{
+    if(!InstigatedBy || !InstigatedBy->GetPawn() || !GetOwner()) return;
+    
+    UAISense_Damage::ReportDamageEvent(GetWorld(),
+        GetOwner(),                                  //
+        InstigatedBy->GetPawn(),                     //
+        Damage,                                      //
+        InstigatedBy->GetPawn()->GetActorLocation(), //
+        GetOwner()->GetActorLocation());
 }
 
 void USTUHealthComponent::SetHealth(const float NewHealth)
