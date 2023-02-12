@@ -10,6 +10,7 @@
 #include "Player/STUPlayerState.h"
 #include "STUUtils.h"
 #include "Components/STURespawnComponent.h"
+#include "Components/STUWeaponComponent.h"
 #include "EngineUtils.h"
 #include "STUPlayerStart.h"
 
@@ -37,6 +38,7 @@ void ASTUGameModeBase::StartPlay()
 
     SpawnBots();
     CreateTeamsInfo();
+    ResetPlayers();
     
     CurrentRound = 1;
     StartRound();
@@ -66,6 +68,7 @@ AActor* ASTUGameModeBase::FindPlayerStart_Implementation(AController* Player, co
             ASTUPlayerStart* Start = *It;
             if (Start && Start->GetTeamID() == PlayerState->GetTeamID())
             {
+                UE_LOG(LogSTUGameModeBase, Warning, TEXT("Player State Team ID: %d"),PlayerState->GetTeamID());
                 return Start;
             }
         }
@@ -126,8 +129,11 @@ bool ASTUGameModeBase::IsRespawnAvailable() const
 bool ASTUGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
 {
     const auto PauseSet = Super::SetPause(PC, CanUnpauseDelegate);
-    SetMatchState(ESTUMatchState::Pause);
-    
+    if(PauseSet)
+    {
+        StopAllFire();
+        SetMatchState(ESTUMatchState::Pause);
+    }
     return PauseSet;
 }
 
@@ -200,6 +206,18 @@ FString ASTUGameModeBase::GenerateBotName()
     return BotName;
 }
 
+void ASTUGameModeBase::StopAllFire()
+{
+    for (auto Pawn : TActorRange<APawn>(GetWorld()))
+    {
+        const auto WeaponComponent = STUUtils::GetSTUPlayerComponent<USTUWeaponComponent>(Pawn);
+        if(!WeaponComponent) continue;
+
+        WeaponComponent->StopFire();
+        WeaponComponent->Zoom(false);
+    }
+}
+
 void ASTUGameModeBase::LogPlayerInfo()
 {
     if(!GetWorld()) return;
@@ -226,6 +244,7 @@ void ASTUGameModeBase::SpawnBots()
         SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
         const auto STUAIController = GetWorld()->SpawnActor<AAIController>(AIControllerClass, SpawnInfo);
+        
         RestartPlayer(STUAIController);
     }
 }
@@ -308,7 +327,6 @@ FLinearColor ASTUGameModeBase::DetermineColorByTeamID(int32 TeamID)
     {
         return GameData.TeamColors[TeamID -1];
     }
-    UE_LOG(LogSTUGameModeBase, Warning, TEXT("No color for teeam id: &i, set to default: %s"), TeamID, *GameData.DefaultTeamColor.ToString());
     return GameData.DefaultTeamColor;
 }
 

@@ -79,4 +79,6 @@ private:
     void SetMatchState(ESTUMatchState State);
 
     FString GenerateBotName();
+
+    void StopAllFire();
 };
