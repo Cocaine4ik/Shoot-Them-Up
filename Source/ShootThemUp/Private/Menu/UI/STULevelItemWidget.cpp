@@ -11,7 +11,7 @@ void USTULevelItemWidget::SetLevelData(const FLevelData& Data)
 
     if(LevelNameTextBlock)
     {
-        LevelNameTextBlock->SetText(FText::FromName(LevelData.LevelName));
+        LevelNameTextBlock->SetText(FText::FromName(LevelData.LevelDisplayName));
     }
 
     if(LevelImage)
