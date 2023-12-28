@@ -11,6 +11,6 @@
 
 **Description:** Third-person shooter based on Udemy Unreal Engine C++ Course.  Immerse yourself in thrilling battles against AI bots across three distinct maps, armed with two weapon options: a powerful rifle and a devastating launcher.
 Navigate the action-packed levels to discover strategic pickups, granting healing benefits or replenishing launcher ammunition. Game boasts a custom animated menu, a sleek UI, comprehensive match statistics, and a myriad of visually stunning effects created with Niagara.
-Prepare for an exhilarating gaming experience where every detail, from weapons to visuals, has been meticulously designed for maximum enjoyment <br>
+Prepare for an exhilarating gaming experience where every detail, from weapons to visuals, has been meticulously designed for maximum enjoyment. <br>
 
 [Gameplay Showcase](https://www.youtube.com/watch?v=V6YPRc6TsxQ) <br>
