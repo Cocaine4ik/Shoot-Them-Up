@@ -5,7 +5,7 @@
 **Project goal:** Udemy Unreal Engine C++ Course <br>
 **Engine:** Unreal Engine 5.0 <br>
 **Platforms:** Windows <br>
-**Technologies & Patterns:** C++, UMG, Blacboard, ECS, Niagara, Unreal Audio System<br>
+**Technologies & Patterns:** C++, UMG, Blackboard, ECS, Niagara, Unreal Audio System<br>
 
 **Input:** W - move forward, S - move back, A - move left, D - move right, SPACE - jump, SHIFT - sprint, P - pause game, R - reload, Mouse Wheel - change weapon, Left Mouse Button - shoot, Right Mouse Button - aim, Mouse - for camera control <br>
 
