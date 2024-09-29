@@ -7,6 +7,9 @@
 #include "GameFramework/PlayerController.h"
 #include "STUPlayerController.generated.h"
 
+struct FInputActionValue;
+class UInputAction;
+class UInputMappingContext;
 class USTURespawnComponent;
 
 UCLASS()
@@ -19,11 +22,24 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component")
     USTURespawnComponent* RespawnComponent;
 
+    // Input start
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputMappingContext* MetaMappingContext;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* PauseGameAction;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* MuteAction;
+    // Input end
+    
     virtual void BeginPlay() override;
     virtual void SetupInputComponent() override;
 
 private:
-    void OnPauseGame();
+    bool bASCInputBound = false;
+    
+    void OnPauseGame(const FInputActionValue& Value);
     void OnMatchStateChanged(ESTUMatchState State);
-    void OnMuteSound();
+    void OnMuteSound(const FInputActionValue& Value);
 };

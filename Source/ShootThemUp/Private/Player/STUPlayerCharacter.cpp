@@ -1,6 +1,10 @@
 // Shoot Them Up Game. All Rights Reserved.
 
 #include "Player/STUPlayerCharacter.h"
+
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "STUPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -42,6 +46,16 @@ void ASTUPlayerCharacter::BeginPlay()
 
     check(CameraCollisionComponent)
 
+    //Add Input Mapping Context
+    if (const ASTUPlayerController* PlayerController = Cast<ASTUPlayerController>(GetController()))
+    {
+        if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+            PlayerController->GetLocalPlayer()))
+        {
+            Subsystem->AddMappingContext(PlayerMappingContext, 0);
+        }
+    }
+    
     CameraCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &ASTUPlayerCharacter::OnCameraCollisionBeginOverlap);
     CameraCollisionComponent->OnComponentEndOverlap.AddDynamic(this, &ASTUPlayerCharacter::OnCameraCollisionEndOverlap);
 }
@@ -52,21 +66,22 @@ void ASTUPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
     check(PlayerInputComponent)
     check(WeaponComponent)
 
-    PlayerInputComponent->BindAxis("MoveForward", this, &ASTUPlayerCharacter::MoveForward);
-    PlayerInputComponent->BindAxis("MoveRight", this, &ASTUPlayerCharacter::MoveRight);
-    PlayerInputComponent->BindAxis("LookUp", this, &ASTUPlayerCharacter::AddControllerPitchInput);
-    PlayerInputComponent->BindAxis("TurnAround", this, &ASTUPlayerCharacter::AddControllerYawInput);
-    PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTUPlayerCharacter::Jump);
-    PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ASTUPlayerCharacter::OnStartRunning);
-    PlayerInputComponent->BindAction("Run", IE_Released, this, &ASTUPlayerCharacter::OnStopRunning);
-    PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USTUWeaponComponent::StartFire);
-    PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &USTUWeaponComponent::StopFire);
-    PlayerInputComponent->BindAction("NextWeapon", IE_Released, WeaponComponent, &USTUWeaponComponent::NextWeapon);
-    PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &USTUWeaponComponent::Reload);
-
-    DECLARE_DELEGATE_OneParam(FZoomInputSignature, bool);
-    PlayerInputComponent->BindAction<FZoomInputSignature>("Zoom", IE_Pressed, WeaponComponent, &USTUWeaponComponent::Zoom, true);
-    PlayerInputComponent->BindAction<FZoomInputSignature>("Zoom", IE_Released, WeaponComponent, &USTUWeaponComponent::Zoom, false);
+    if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+    {
+        EnhancedInputComponent->BindAction(MoveForwardAction, ETriggerEvent::Triggered, this, &ASTUPlayerCharacter::MoveForward);
+        EnhancedInputComponent->BindAction(MoveRightAction, ETriggerEvent::Triggered, this, &ASTUPlayerCharacter::MoveRight);
+        EnhancedInputComponent->BindAction(LookUpAction, ETriggerEvent::Triggered, this, &ASTUPlayerCharacter::LookUp);
+        EnhancedInputComponent->BindAction(TurnAroundAction, ETriggerEvent::Triggered, this, &ASTUPlayerCharacter::TurnAround);
+        EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ASTUPlayerCharacter::Jump);
+        EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Started, this, &ASTUPlayerCharacter::OnStartRunning);
+        EnhancedInputComponent->BindAction(RunAction, ETriggerEvent::Completed, this, &ASTUPlayerCharacter::OnStopRunning);
+        EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, WeaponComponent, &USTUWeaponComponent::StartFire);
+        EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, WeaponComponent, &USTUWeaponComponent::StopFire);
+        EnhancedInputComponent->BindAction(NextWeaponAction, ETriggerEvent::Started, WeaponComponent, &USTUWeaponComponent::NextWeapon);
+        EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, WeaponComponent, &USTUWeaponComponent::Reload);
+        EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Started, WeaponComponent, &USTUWeaponComponent::Zoom, true);
+        EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Completed, WeaponComponent, &USTUWeaponComponent::Zoom, false);
+    }
 }
 
 bool ASTUPlayerCharacter::IsRunning() const
@@ -74,8 +89,10 @@ bool ASTUPlayerCharacter::IsRunning() const
     return bWantsToRun && bIsMovingForward && !GetVelocity().IsZero();
 }
 
-void ASTUPlayerCharacter::MoveForward(float Amount)
+void ASTUPlayerCharacter::MoveForward(const FInputActionValue& Value)
 {
+    const float Amount = Value.Get<float>();
+    
     bIsMovingForward = Amount > 0.0f;
     if(Amount == 0.0f) return;
     AddMovementInput(GetActorForwardVector(), Amount);
@@ -86,9 +103,22 @@ void ASTUPlayerCharacter::MoveForward(float Amount)
     }
 }
 
-void ASTUPlayerCharacter::MoveRight(float Amount)
+void ASTUPlayerCharacter::MoveRight(const FInputActionValue& Value)
 {
+    const float Amount = Value.Get<float>();
     AddMovementInput(GetActorRightVector(), Amount);
+}
+
+void ASTUPlayerCharacter::LookUp(const FInputActionValue& Value)
+{
+    const float Amount = Value.Get<float>();
+    AddControllerPitchInput(Amount);
+}
+
+void ASTUPlayerCharacter::TurnAround(const FInputActionValue& Value)
+{
+    const float Amount = Value.Get<float>();
+    AddControllerYawInput(Amount);
 }
 
 void ASTUPlayerCharacter::OnStartRunning()
