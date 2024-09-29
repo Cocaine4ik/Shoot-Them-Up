@@ -6,6 +6,9 @@
 #include "Player/STUBaseCharacter.h"
 #include "STUPlayerCharacter.generated.h"
 
+struct FInputActionValue;
+class UInputAction;
+class UInputMappingContext;
 class UCameraComponent;
 class USpringArmComponent;
 class USphereComponent;
@@ -28,7 +31,42 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USphereComponent* CameraCollisionComponent;
-    
+
+    // Input start
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputMappingContext* PlayerMappingContext;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* MoveForwardAction;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* MoveRightAction;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* LookUpAction;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* TurnAroundAction;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* FireAction;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* RunAction;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* JumpAction;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* ZoomAction;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* NextWeaponAction;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* ReloadAction;
+    // Input end
+
     virtual void OnDeath() override;
     virtual void BeginPlay() override;
 
@@ -41,8 +79,10 @@ private:
     bool bWantsToRun = false;
     bool bIsMovingForward = false;
     
-    void MoveForward(float Amount);
-    void MoveRight(float Amount);
+    void MoveForward(const FInputActionValue& Value);
+    void MoveRight(const FInputActionValue& Value);
+    void LookUp(const FInputActionValue& Value);
+    void TurnAround(const FInputActionValue& Value);
     void OnStartRunning();
     void OnStopRunning();
 

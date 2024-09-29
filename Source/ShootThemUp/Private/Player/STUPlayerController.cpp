@@ -2,12 +2,13 @@
 
 
 #include "Player/STUPlayerController.h"
-
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "STUGameHUD.h"
 #include "Components/STURespawnComponent.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "STUGameModeBase.h"
 #include "STUGameInstance.h"
+#include "STUPlayerCharacter.h"
 
 ASTUPlayerController::ASTUPlayerController()
 {
@@ -18,9 +19,15 @@ void ASTUPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    if(GetWorld())
+    if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+        GetLocalPlayer()))
     {
-        if(const auto GameMode = Cast<ASTUGameModeBase>(GetWorld()->GetAuthGameMode()))
+        Subsystem->AddMappingContext(MetaMappingContext, 1);
+    }
+
+    if (GetWorld())
+    {
+        if (const auto GameMode = Cast<ASTUGameModeBase>(GetWorld()->GetAuthGameMode()))
         {
             GameMode->OnMatchStateChanged.AddUObject(this, &ASTUPlayerController::OnMatchStateChanged);
         }
@@ -30,13 +37,16 @@ void ASTUPlayerController::BeginPlay()
 void ASTUPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
-    if(!InputComponent) return;
+    check(InputComponent)
 
-    InputComponent->BindAction("PauseGame", IE_Pressed, this, &ASTUPlayerController::OnPauseGame);
-    InputComponent->BindAction("Mute", IE_Pressed, this, &ASTUPlayerController::OnMuteSound);
+    if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
+    {
+        EnhancedInputComponent->BindAction(PauseGameAction, ETriggerEvent::Triggered, this, &ASTUPlayerController::OnPauseGame);
+        EnhancedInputComponent->BindAction(MuteAction, ETriggerEvent::Triggered, this, &ASTUPlayerController::OnMuteSound);
+    }
 }
 
-void ASTUPlayerController::OnPauseGame()
+void ASTUPlayerController::OnPauseGame(const FInputActionValue& Value)
 {
     if(!GetWorld() || !GetWorld()->GetAuthGameMode()) return;
 
@@ -57,7 +67,7 @@ void ASTUPlayerController::OnMatchStateChanged(ESTUMatchState State)
     }
 }
 
-void ASTUPlayerController::OnMuteSound()
+void ASTUPlayerController::OnMuteSound(const FInputActionValue& Value)
 {
     if(!GetWorld()) return;
     const auto STUGameInstance = GetWorld()->GetGameInstance<USTUGameInstance>();

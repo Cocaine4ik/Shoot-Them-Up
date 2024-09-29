@@ -23,7 +23,7 @@ public class ShootThemUp : ModuleRules
 			"GameplayTags"
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { });
+		PrivateDependencyModuleNames.AddRange(new string[] { "EnhancedInput", "EnhancedInput" });
 
 		PublicIncludePaths.AddRange(new[]
 		{
